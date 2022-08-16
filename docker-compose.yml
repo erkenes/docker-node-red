@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  node-red:
+    image: nodered/node-red:3.0.2
+    restart: always
+    environment:
+      TZ: '${TIMEZONE}'
+    volumes:
+      - './Data:/data'
+    networks:
+      - traefik-proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${PROJECT_IDENTIFIER}.tls=true'
+      - 'traefik.http.routers.${PROJECT_IDENTIFIER}.entrypoints=https'
+      - 'traefik.http.routers.${PROJECT_IDENTIFIER}.rule=Host(`${VIRTUAL_HOST}`)'
+      - 'traefik.http.routers.${PROJECT_IDENTIFIER}.middlewares=chain-authelia@file'
+      - 'traefik.http.routers.${PROJECT_IDENTIFIER}.service=${PROJECT_IDENTIFIER}'
+      - 'traefik.http.services.${PROJECT_IDENTIFIER}.loadbalancer.server.port=1880'
+
+networks:
+  traefik-proxy:
+    name: traefik-proxy
+    driver: bridge
