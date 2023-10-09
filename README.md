@@ -1,21 +1,56 @@
-# Node-Red with Traefik
+# Node-RED Behind a Traefik Proxy
 
-This Node-Red instance is secured with [Authelia](https://www.authelia.com/) by default.
+This repository provides instructions and configurations for running Node-RED behind a Traefik proxy.
+Node-RED is a flow-based development tool for visual programming.
 
-To remove Authelia, which is not recommended, remove the following label:
+## Prerequisites
 
-```yaml
-traefik.http.routers.${PROJECT_IDENTIFIER}.middlewares: 'chain-authelia@file'
-```
+Before you begin, ensure you have the following prerequisites installed and set up:
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Traefik](https://github.com/erkenes/docker-traefik)
+
+## Installation
+
+1. Clone this repository to your server:
+
+    ```shell
+    git clone https://github.com/erkenes/docker-node-red.git
+    cd docker-node-red
+    ```
+
+2. Create a `.env` file and configure your settings. You can use the provided `.env.example`
+   ```shell
+   cp .env.example .env
+   nano .env
+   ```
+
+3. (optional) if you want to secure Node-RED with [Authentik](https://github.com/erkenes/docker-authentik), uncomment the middleware line in the `docker-compose.yml` file
+   ```yaml
+   services:
+     node-red:
+       labels:
+         - 'traefik.http.routers.${PROJECT_IDENTIFIER}.middlewares=middlewares-authentik@file'
+   ```
+
+4. Start Node-RED
+   ```shell
+   docker compose up -d
+   ```
 
 ## Configuration
 
-To change the domain, change the variable `VIRTUAL_HOST` in the .env file.
+- `.env` - This file contains the environment variables for the Node-RED container. You can change the domain for Node-RED by changing the `NODERED_FQDN` variable.
 
-To change the identifier for Traefik change the variable `PROJECT_IDENTIFIER` in the .env file.
+## Troubleshooting
 
-To change the timezone change the variable `TIMEZONE` in the .env file.
+If you encounter issues or have questions, please open an issue or refer to the official documentation for [Node-RED](https://nodered.org/docs/).
 
----
+## License
 
-Install Traefik: [Traefik with Authelia](https://github.com/erkenes/docker-traefik)
+This project is licensed under the [MIT License](LICENSE).
+
+## Contributing
+
+Contributions are welcome! If you have any improvements, bug fixes, or feature requests, please open an issue or submit a pull request.
